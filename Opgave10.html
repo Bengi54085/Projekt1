@@ -1,0 +1,104 @@
+<!DOCTYPE html> <!-- HTML-skelet-->
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Matematikspil</title>
+</head>
+<body> <!-- UI — hvad brugeren ser -->
+  <h2>Matematikspil</h2>
+
+  <!-- Her viser vi regnestykket -->
+  <p id="question">Klik på "Nyt regnestykke" for at starte!</p>
+
+  <!-- Inputfelt til brugerens svar -->
+  <input type="number" id="answer" placeholder="Indtast dit svar">
+
+  <!-- Knapper -->
+  <button onclick="newQuestion()">Nyt regnestykke</button>
+  <button onclick="checkAnswer()">Tjek svar</button>
+
+  <!-- Feedback -->
+  <p id="feedback"></p>
+
+  <script>
+    // Array til at gemme hele regnestykket: [tal1, operator, tal2, resultat]
+    // let anvendes fordi det er en variabel, der kan ændres senere
+    let problem = [];
+
+    // Funktion til at lave et tilfældigt heltal mellem min og max
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Funktion til at lave et nyt regnestykke og gemme det i arrayet
+    // const anvendes fordi det en konstant — altså en variabel, der ikke ændres efter, den er sat
+    function newQuestion() {
+      const num1 = randomInt(0, 1000);
+      const num2 = randomInt(1, 1000); // undgår division med 0
+      const operators = ["+", "-", "*", "/"];
+      const operator = operators[randomInt(0, operators.length - 1)]; // der vælges en tilfældig 
+      // operator fra listen og gemmer den i variablen operator.
+
+      //finder ud af hvilken regneoperation der skal udføres, og gemmer resultatet i result.
+      //Switch er anvendt til at tjekke, hvilken operator der er valgt
+      let result;
+      switch (operator) {
+        case "+": //Hvis operator er "+", udfør denne blok:
+          result = num1 + num2;
+          break;
+        case "-":
+          result = num1 - num2;
+          break;
+        case "*":
+          result = num1 * num2;
+          break;
+        case "/":
+          result = num1 / num2;
+          break;
+        default:
+          result = NaN; // bruges her som fejlmarkering
+            // Hvis ingen af de ovenstående cases matcher,
+            // så køres "default"-blokken som en slags "backup".
+}
+
+      // Gemmer hele regnestykket i arrayet i problem
+      problem = [num1, operator, num2, result];
+
+      // Viser spørgsmålet
+      document.getElementById("question").textContent =
+        `Hvad giver ${problem[0]} ${problem[1]} ${problem[2]}?`;
+
+      // Nulstiller input og feedback
+      document.getElementById("answer").value = "";
+      document.getElementById("feedback").textContent = "";
+    }
+
+    // Funktion til at tjekke svaret
+    function checkAnswer() {
+          // Henter brugerens svar fra inputfeltet og laver det til et tal
+      const userAnswer = Number(document.getElementById("answer").value);
+
+      // Tjekkes først, om inputfeltet er tomt
+      if (document.getElementById("answer").value === "") {
+        document.getElementById("feedback").textContent = "Indtast et svar først!";
+        return;
+      }
+
+      // Henter den korrekte løsning fra arrayet (index 3) som viser resultatet
+      const correctAnswer = problem[3];
+      // Beregner forskellen mellem brugerens svar og det korrekte
+      const difference = Math.abs(userAnswer - correctAnswer);
+
+       // Hvis forskellen er 0, er svaret korrekt
+      if (difference === 0) {
+        document.getElementById("feedback").textContent = "Dit svar er korrekt!";
+      } 
+      // Ellers vis hvor meget svaret afviger
+      else {
+        document.getElementById("feedback").textContent =
+          `Dit svar afviger med ${difference}`;
+      }
+    }
+  </script>
+</body>
+</html>
